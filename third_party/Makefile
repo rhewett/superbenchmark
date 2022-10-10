@@ -26,7 +26,7 @@ sb_micro_path:
 cuda_cutlass:
 ifneq (,$(wildcard cutlass/CMakeLists.txt))
 	cmake -DCMAKE_INSTALL_BINDIR=$(SB_MICRO_PATH)/bin -DCMAKE_INSTALL_LIBDIR=$(SB_MICRO_PATH)/lib -DCMAKE_BUILD_TYPE=Release \
-		-DCUTLASS_NVCC_ARCHS='70;75;80;86' -DCUTLASS_ENABLE_EXAMPLES=OFF -DCUTLASS_ENABLE_TESTS=OFF -S ./cutlass -B ./cutlass/build
+		-DCUTLASS_NVCC_ARCHS='70;75;80;86;90' -DCUTLASS_ENABLE_EXAMPLES=OFF -DCUTLASS_ENABLE_TESTS=OFF -S ./cutlass -B ./cutlass/build
 	cmake --build ./cutlass/build -j $(shell nproc --ignore=2) --target install
 endif
 
@@ -36,9 +36,9 @@ endif
 # The Makefile of bandwidthTest does not have 'install' target, so need to copy bin to $(SB_MICRO_PATH)/bin/ and create $(SB_MICRO_PATH)/bin/ if not existing.
 cuda_bandwidthTest: sb_micro_path
 	if [ -d cuda-samples ]; then rm -rf cuda-samples; fi
-	git clone -b v$(shell nvcc --version | grep 'release' | awk '{print $$6}' | cut -c2- | cut -d '.' -f1-2) https://github.com/NVIDIA/cuda-samples.git ./cuda-samples
-	cd ./cuda-samples/Samples/bandwidthTest && make clean && make TARGET_ARCH=x86_64 SMS="70 75 80 86"
-	cp -v ./cuda-samples/Samples/bandwidthTest/bandwidthTest $(SB_MICRO_PATH)/bin/
+	git clone https://github.com/NVIDIA/cuda-samples.git ./cuda-samples
+	cd ./cuda-samples/Samples/1_Utilities/bandwidthTest && make clean && make TARGET_ARCH=x86_64 SMS="70 75 80 86 90"
+	cp -v ./cuda-samples/Samples/1_Utilities/bandwidthTest/bandwidthTest $(SB_MICRO_PATH)/bin/
 
 # Build nccl-tests from commit 8274cb4 of default branch.
 cuda_nccl_tests: sb_micro_path
