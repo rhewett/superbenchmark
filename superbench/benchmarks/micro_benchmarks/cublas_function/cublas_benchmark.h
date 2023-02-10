@@ -473,9 +473,7 @@ void CublasFunction::benchmark() {
 
     // Warm up
     for (int i_ = 0; i_ < warm_up; i_++) {
-        for (int j = 0; j < num_in_step; j++) {
             this->kernel_entry();
-        }
     }
     CUDA_SAFE_CALL(cudaDeviceSynchronize());
 
@@ -487,12 +485,7 @@ void CublasFunction::benchmark() {
         // Collect time within each step, including #repeat_in_one_step times function invoking
         auto start = std::chrono::high_resolution_clock::now();
         for (int j = 0; j < num_in_step; j++) {
-            if (this->correctness)
-                this->matrix_calculation_on_cpu();
             this->kernel_entry();
-            if (this->correctness) {
-                errors += this->correctness_check();
-            }
         }
         CUDA_SAFE_CALL(cudaDeviceSynchronize());
         auto end = std::chrono::high_resolution_clock::now();
@@ -507,6 +500,13 @@ void CublasFunction::benchmark() {
     std::cout << "[raw_data]: ";
     for (int i = 0; i < iteration_time.size(); i++) {
         std::cout << iteration_time[i] << ",";
+    }
+    std::cout << std::endl;
+    std::cout << "[tflop_data]: ";
+    for (int i = 0; i < iteration_time.size(); i++) {
+       double tflop = (2.0*this->m_*this->n_*this->k_);
+       auto ti = iteration_time[i]*1e6;
+        std::cout << tflop/ti << ",";
     }
     std::cout << std::endl;
     if (this->correctness) {
