@@ -205,6 +205,8 @@ void from_json(const json &j, CublasFunction &fn) {
  */
 CublasFunction *get_cublas_function_pointer(CublasFunction &function) {
     switch (function.get_e_name()) {
+    case e_cublasHgemm:
+        return new HgemmFunction(function);
     case e_cublasSgemm:
         return new SgemmFunction(function);
     case e_cublasGemmEx:

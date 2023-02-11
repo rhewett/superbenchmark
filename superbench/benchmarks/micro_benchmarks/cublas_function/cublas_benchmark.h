@@ -28,13 +28,15 @@ enum cublas_function_name_enum {
     e_cublasGemmEx,
     e_cublasGemmStridedBatchedEx,
     e_cublasSgemmStridedBatched,
-    e_cublasCgemm3mStridedBatched
+    e_cublasCgemm3mStridedBatched,
+    e_cublasHgemm
 };
 
 /**
  * @brief Map from cublas function name to cublas function name enum
  */
 static std::unordered_map<std::string, cublas_function_name_enum> const cublas_function_name_string = {
+    {"cublasHgemm", cublas_function_name_enum::e_cublasHgemm},
     {"cublasSgemm", cublas_function_name_enum::e_cublasSgemm},
     {"cublasCgemm", cublas_function_name_enum::e_cublasCgemm},
     {"cublasGemmEx", cublas_function_name_enum::e_cublasGemmEx},

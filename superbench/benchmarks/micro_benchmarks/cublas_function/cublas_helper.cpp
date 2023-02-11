@@ -66,6 +66,26 @@ void cuda_free(cublasHandle_t *cublas_handle) {
  * @param  b                input matrixB
  * @param  c                output matrix
  */
+void hgemm(cublasHandle_t handle, int transa, int transb, int m, int n, int k, const half *a, const half *b,
+           half *c) {
+    half alpha = 1.0f;
+    half beta = 0.0f;
+    CUBLAS_SAFE_CALL(cublasSgemm(handle, (transa ? CUBLAS_OP_T : CUBLAS_OP_N), (transb ? CUBLAS_OP_T : CUBLAS_OP_N), m,
+                                 n, k, &alpha, a, (transa ? k : m), b, (transb ? n : k), &beta, c, m));
+}
+
+/**
+ * @brief                   cublas function of gemm, wrapper of cublasSgemm
+ * @param  handle           cublas handle
+ * @param  transa           whether matrixA transpose
+ * @param  transb           whether matrixB transpose
+ * @param  m                m of matrix m*n,n*k
+ * @param  n                n of matrix m*n,n*k
+ * @param  k                k of matrix m*n,n*k
+ * @param  a                input matrixA
+ * @param  b                input matrixB
+ * @param  c                output matrix
+ */
 void sgemm(cublasHandle_t handle, int transa, int transb, int m, int n, int k, const float *a, const float *b,
            float *c) {
     float alpha = 1.0f;
